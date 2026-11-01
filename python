@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leitor em voz alta</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 0 20px;
+    line-height: 1.6;
+    color: #222;
+  }
+
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    background: #4facfe;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: #2d8fe6;
+  }
+</style>
+</head>
+<body>
+
+  <button id="botao-leitura" onclick="lerEmVozAlta()">▶️ Ler em voz alta</button>
+
+  <main>
+    <h1>Título da página</h1>
+    <p>Este é um texto de exemplo para testar a leitura em voz alta. O navegador vai ler tudo o que estiver dentro da tag main.</p>
+    <p>Clique no botão para começar, clique de novo para pausar e mais uma vez para continuar de onde parou.</p>
+  </main>
+
+<script>
+  // controla se a leitura está em andamento
+  let lendo = false;
+
+  const botao = document.getElementById("botao-leitura");
+
+  function lerEmVozAlta() {
+    if (lendo === true) {
+      // se estiver pausado
+      if (speechSynthesis.paused === true) {
+        // continua de onde parou
+        speechSynthesis.resume();
+        botao.textContent = "⏸️ Pausar";
+      } else {
+        // pausa
+        speechSynthesis.pause();
+        botao.textContent = "▶️ Continuar";
+      }
+      return;
+    }
+
+    let conteudo = document.querySelector("main");
+    let texto = conteudo.innerText;
+
+    let fala = new SpeechSynthesisUtterance(texto);
+    fala.lang = "pt-BR";
+    fala.onend = finalizarLeitura;
+
+    speechSynthesis.cancel();
+    speechSynthesis.speak(fala);
+
+    lendo = true;
+    botao.textContent = "⏸️ Pausar";
+  }
+
+  // chamada quando a leitura termina
+  function finalizarLeitura() {
+    lendo = false;
+    botao.textContent = "▶️ Ler em voz alta";
+  }
+</script>
+
+</body>
+</html>
